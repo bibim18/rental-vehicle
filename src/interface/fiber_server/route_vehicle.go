@@ -18,11 +18,11 @@ type updateVehicleRequest struct {
 }
 
 type vehicleDataRequest struct {
-	Brand        string       `json:"brand"`
-	Model        string       `json:"model"`
-	LicensePlate string       `json:"license_plate"`
-	VehicleType  vehicle.Type `json:"vehicle_type"`
-	Color        string       `json:"color"`
+	Brand        string        `json:"brand"`
+	Model        string        `json:"model"`
+	LicensePlate string        `json:"license_plate"`
+	VehicleType  vehicle.VType `json:"vehicle_type"`
+	Color        string        `json:"color"`
 }
 
 type ratePriceDataRequest struct {

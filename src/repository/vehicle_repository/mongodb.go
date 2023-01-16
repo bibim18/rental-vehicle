@@ -19,11 +19,11 @@ type mongoDb struct {
 	col *mongo.Collection
 }
 
-type mongoVehicleFullDetail struct {
+type mongoVehicleFullStruct struct {
 	Brand          string                `bson:"brand"`
 	Model          string                `bson:"model"`
 	LicensePlate   string                `bson:"license_plate"`
-	VehicleType    vehicle.Type          `bson:"vehicle_type"`
+	VehicleType    vehicle.VType         `bson:"vehicle_type"`
 	Color          string                `bson:"color"`
 	Status         string                `bson:"status"`
 	RatePrice      mongoVehicleRatePrice `bson:"rate_price"`
@@ -34,7 +34,7 @@ type mongoVehicle struct {
 	Brand        string                `bson:"brand"`
 	Model        string                `bson:"model"`
 	LicensePlate string                `bson:"license_plate"`
-	VehicleType  vehicle.Type          `bson:"vehicle_type"`
+	VehicleType  vehicle.VType         `bson:"vehicle_type"`
 	Color        string                `bson:"color"`
 	RatePrice    mongoVehicleRatePrice `bson:"rate_price"`
 }
@@ -46,8 +46,8 @@ type mongoVehicleRatePrice struct {
 	Deposit vehicle.Deposit `bson:"deposit"`
 }
 
-func transferVehicleToMongoStruct(v use_case.VehicleFullDetail) mongoVehicleFullDetail {
-	return mongoVehicleFullDetail{
+func transferVehicleToMongoFullStruct(v use_case.VehicleFullDetail) mongoVehicleFullStruct {
+	return mongoVehicleFullStruct{
 		Brand:          v.Vehicle.Brand,
 		Model:          v.Vehicle.Model,
 		LicensePlate:   v.Vehicle.LicensePlate,
@@ -59,7 +59,18 @@ func transferVehicleToMongoStruct(v use_case.VehicleFullDetail) mongoVehicleFull
 	}
 }
 
-func transferMongoToVehicleStruct(mVehicle mongoVehicleFullDetail) use_case.VehicleFullDetail {
+func transferVehicleToMongoStruct(v use_case.VehicleFullDetail) mongoVehicle {
+	return mongoVehicle{
+		Brand:        v.Vehicle.Brand,
+		Model:        v.Vehicle.Model,
+		LicensePlate: v.Vehicle.LicensePlate,
+		VehicleType:  v.Vehicle.VehicleType,
+		Color:        v.Vehicle.Color,
+		RatePrice:    mongoVehicleRatePrice(v.Vehicle.RatePrice),
+	}
+}
+
+func transferMongoToVehicleStruct(mVehicle mongoVehicleFullStruct) use_case.VehicleFullDetail {
 	return use_case.VehicleFullDetail{
 		Vehicle: vehicle.Vehicle{
 			Brand:        mVehicle.Brand,
@@ -73,20 +84,9 @@ func transferMongoToVehicleStruct(mVehicle mongoVehicleFullDetail) use_case.Vehi
 	}
 }
 
-func transferVehicleToUpdateMongoStruct(v use_case.VehicleFullDetail) mongoVehicle {
-	return mongoVehicle{
-		Brand:        v.Vehicle.Brand,
-		Model:        v.Vehicle.Model,
-		LicensePlate: v.Vehicle.LicensePlate,
-		VehicleType:  v.Vehicle.VehicleType,
-		Color:        v.Vehicle.Color,
-		RatePrice:    mongoVehicleRatePrice(v.Vehicle.RatePrice),
-	}
-}
-
 func (m mongoDb) CreateVehicle(ctx context.Context, vehicle use_case.VehicleFullDetail) error {
 	log.Info("vehicle_repo.CreateVehicle")
-	prepareToMongo := transferVehicleToMongoStruct(vehicle)
+	prepareToMongo := transferVehicleToMongoFullStruct(vehicle)
 	_, err := m.col.InsertOne(ctx, prepareToMongo)
 
 	return err
@@ -121,7 +121,7 @@ func (m mongoDb) UpdateVehicle(ctx context.Context, vehicleId string, v use_case
 		return err
 	}
 
-	newVehicleData := transferVehicleToUpdateMongoStruct(v)
+	newVehicleData := transferVehicleToMongoStruct(v)
 	res, err := m.col.UpdateOne(ctx, bson.M{"_id": objectId}, bson.M{
 		"$set": newVehicleData,
 	})
@@ -151,20 +151,20 @@ func (m mongoDb) GetVehicleByStatus(ctx context.Context, status string, limit, o
 
 	cur, err := m.col.Find(ctx, filter)
 
-	var vehicles []mongoVehicleFullDetail
+	var vehicles []mongoVehicleFullStruct
 	defer cur.Close(ctx)
 
 	for cur.Next(ctx) {
-		var v mongoVehicleFullDetail
+		var v mongoVehicleFullStruct
 		err := cur.Decode(&v)
 		if err != nil {
-			return nil, err
+			return []use_case.VehicleFullDetail{}, err
 		}
 		vehicles = append(vehicles, v)
 	}
 
 	if err != nil {
-		return nil, err
+		return []use_case.VehicleFullDetail{}, err
 	}
 
 	vehiclesWithFullDetail := make([]use_case.VehicleFullDetail, len(vehicles))
@@ -183,23 +183,14 @@ func (m mongoDb) GetVehicleById(ctx context.Context, vehicleId string) (use_case
 
 	cur := m.col.FindOne(ctx, bson.M{"_id": objectId})
 
-	var v mongoVehicleFullDetail
+	var v mongoVehicleFullStruct
 	errDocode := cur.Decode(&v)
 	if errDocode != nil {
 		return use_case.VehicleFullDetail{}, errDocode
 	}
 
-	return use_case.VehicleFullDetail{
-		Vehicle: vehicle.Vehicle{
-			Brand:        v.Brand,
-			Model:        v.Model,
-			LicensePlate: v.LicensePlate,
-			VehicleType:  v.VehicleType,
-			Color:        v.Color,
-			RatePrice:    vehicle.Price(v.RatePrice),
-		},
-		Status: v.Status,
-	}, nil
+	vFullDetail := transferMongoToVehicleStruct(v)
+	return vFullDetail, nil
 }
 
 func NewMongoDb(db *mongo.Database) use_case.VehicleRepository {

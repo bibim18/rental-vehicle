@@ -7,11 +7,10 @@ import (
 )
 
 var (
-	ErrInvalidVehicle    = errors.New("invalid vehicle")
+	ErrInvalidVehicle    = errors.New("Invalid vehicle")
 	ErrVehicleNotFound   = errors.New("Cannot found vehicle")
 	ErrVehicleNotArchive = errors.New("Vehicle cannot archive")
 	ErrVehicleNotUpdate  = errors.New("Vehicle cannot update detail")
-	ErrInvalidPrice      = errors.New("invalid price")
 )
 
 type Deposit float32
@@ -21,7 +20,7 @@ type Vehicle struct {
 	Brand        string `validate:"required,min=3"`
 	Model        string `validate:"required,min=3"`
 	LicensePlate string `validate:"required,min=3"`
-	VehicleType  Type   `validate:"oneof='car-lux' 'car' 'moto' 'moto-lux'"`
+	VehicleType  VType  `validate:"oneof='car-lux' 'car' 'moto' 'moto-lux'"`
 	Color        string
 	RatePrice    Price
 }
@@ -33,7 +32,7 @@ type Price struct {
 	Deposit Deposit `validate:"required,min=1,max=100"`
 }
 
-type Type string
+type VType string
 type UnitType string
 
 const (
@@ -43,10 +42,10 @@ const (
 )
 
 const (
-	LuxuryCarType          Type = "car-lux"
-	OrdinaryCarType        Type = "car"
-	LuxuryMotorcycleType   Type = "moto-lux"
-	OrdinaryMotorcycleType Type = "moto"
+	LuxuryCarType          VType = "car-lux"
+	OrdinaryCarType        VType = "car"
+	LuxuryMotorcycleType   VType = "moto-lux"
+	OrdinaryMotorcycleType VType = "moto"
 )
 
 const (
@@ -56,7 +55,7 @@ const (
 )
 
 type VehicleMethod interface {
-	GetType() Type
+	GetType() VType
 	GetDeposit() Deposit
 }
 
@@ -86,21 +85,15 @@ func VerifyStatus(status string) error {
 	if status == ReadyStatus || status == InuseStatus || status == UnactiveStatus {
 		return nil
 	}
-
-	return errors.Errorf("vehicle status is invalid")
+	return errors.Errorf("vehicle status '%s' is invalid", status)
 }
 
-func (v Vehicle) GetType() Type {
-	return v.VehicleType
-}
+// func (v Vehicle) GetType() VType {
+// 	return v.VehicleType
+// }
 
-func (v Vehicle) GetListType() []Type {
-	vehicleType := []Type{LuxuryCarType, OrdinaryCarType, LuxuryMotorcycleType, OrdinaryMotorcycleType}
-	return vehicleType
-}
-
-func New(vType Type, v Vehicle) VehicleMethod {
-	vehicleClass := map[Type]VehicleMethod{
+func New(vType VType, v Vehicle) VehicleMethod {
+	vehicleClass := map[VType]VehicleMethod{
 		LuxuryCarType:          NewLuxuryCar(v),
 		OrdinaryCarType:        NewOrdinaryCar(v),
 		LuxuryMotorcycleType:   NewLuxuryMotorcycle(v),

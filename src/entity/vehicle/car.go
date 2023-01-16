@@ -8,7 +8,7 @@ func (c Car) GetDeposit() Deposit {
 	return c.RatePrice.Deposit / 100
 }
 
-func (c Car) GetType() Type {
+func (c Car) GetType() VType {
 	return OrdinaryCarType
 }
 

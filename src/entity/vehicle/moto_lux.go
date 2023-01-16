@@ -8,7 +8,7 @@ func (m MotoLux) GetDeposit() Deposit {
 	return m.RatePrice.Deposit / 100
 }
 
-func (m MotoLux) GetType() Type {
+func (m MotoLux) GetType() VType {
 	return LuxuryMotorcycleType
 }
 

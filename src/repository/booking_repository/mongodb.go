@@ -29,6 +29,8 @@ type mongoBooking struct {
 	RentPrice  int                    `bson:"rent_price"`
 	DueDate    time.Time              `bson:"due_date"`
 	Customer   mongoBookingCustomer   `bson:"customer"`
+	LateFines  int                    `bson:"late_fines"`
+	ReturnDate time.Time              `bson:"return_date"`
 }
 
 type mongoBookingCustomer struct {
@@ -50,6 +52,28 @@ func transferBookingToMongoStruct(b use_case.BookingFullDetail) mongoBooking {
 		RentDate:   b.Booking.RentDate,
 		DueDate:    b.Booking.DueDate,
 		Customer:   mongoBookingCustomer(b.Customer),
+	}
+}
+
+func transferMongoToBookingStruct(b mongoBooking) use_case.BookingFullDetail {
+	return use_case.BookingFullDetail{
+		Booking: booking.Booking{
+			VehicleId: b.VehicleId,
+			Unit:      b.Unit,
+			Qty:       b.Qty,
+			Status:    b.Status,
+			DueDate:   b.DueDate,
+			RentDate:  b.RentDate,
+		},
+		Customer: customer.Customer(b.Customer),
+	}
+}
+
+func transferUpdatedBookingToMongoStruct(b booking.Booking) mongoBooking {
+	return mongoBooking{
+		Status:     b.Status,
+		LateFines:  b.LateFines,
+		ReturnDate: b.ReturnDate,
 	}
 }
 
@@ -76,22 +100,8 @@ func (m mongoDb) GetBookingById(ctx context.Context, bId string) (use_case.Booki
 		return use_case.BookingFullDetail{}, errDocode
 	}
 
-	return use_case.BookingFullDetail{
-		Booking: booking.Booking{
-			VehicleId: b.VehicleId,
-			Unit:      b.Unit,
-			Qty:       b.Qty,
-			Status:    b.Status,
-			DueDate:   b.DueDate,
-			RentDate:  b.RentDate,
-		},
-		Customer: customer.Customer{
-			Name:        b.Customer.Name,
-			Lastname:    b.Customer.Lastname,
-			PhoneNumber: b.Customer.PhoneNumber,
-			Email:       b.Customer.Email,
-		},
-	}, nil
+	bFullDetail := transferMongoToBookingStruct(b)
+	return bFullDetail, nil
 }
 
 func (m mongoDb) UpdateReturnedBooking(ctx context.Context, bId string, b booking.Booking) error {
@@ -100,12 +110,10 @@ func (m mongoDb) UpdateReturnedBooking(ctx context.Context, bId string, b bookin
 	if err != nil {
 		return err
 	}
+
+	updatedField := transferUpdatedBookingToMongoStruct(b)
 	res, err := m.col.UpdateOne(ctx, bson.M{"_id": objectId}, bson.M{
-		"$set": bson.M{
-			"status":      b.Status,
-			"late_fines":  b.LateFines,
-			"return_date": b.ReturnDate,
-		},
+		"$set": updatedField,
 	})
 	if err != nil {
 		return err
