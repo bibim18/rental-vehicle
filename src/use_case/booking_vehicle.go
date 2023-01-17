@@ -29,9 +29,9 @@ func (u UseCase) BookingVehicle(ctx context.Context, b BookingDetail) (string, e
 	}
 
 	vehicleMethod := vehicle.New(vehicleDetail.Vehicle.VehicleType, vehicleDetail.Vehicle)
+	deposit := vehicleMethod.GetDeposit()
 
 	rentalCost := u.CalculateRentalPrice(vehicleDetail, b)
-	deposit := vehicleMethod.GetDeposit()
 	rentalDeposit, totalPrice := u.CalculatePrice(deposit, rentalCost)
 	rentDate, dueDate := b.Booking.CalculateDate()
 
