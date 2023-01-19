@@ -1,6 +1,7 @@
 package use_case
 
 import (
+	"rental-vehicle-system/src/entity/booking"
 	"rental-vehicle-system/src/entity/vehicle"
 	"time"
 
@@ -29,6 +30,7 @@ func (u UseCase) CalculatePrice(deposit vehicle.Deposit, price int) (vehicle.Dep
 }
 
 func (u UseCase) CalculateLateFines(bDetail BookingFullDetail, vDetail VehicleFullDetail) (time.Time, int) {
+	// คำนวนค่าปรับ
 	log.Info("calculate_booking.CalculateLateFines")
 
 	var lateFines int = 0
@@ -36,8 +38,7 @@ func (u UseCase) CalculateLateFines(bDetail BookingFullDetail, vDetail VehicleFu
 	isOverDue := returnDate.After(bDetail.Booking.DueDate)
 	if isOverDue {
 		totalOverDue := bDetail.Booking.GetTotalOverDueDays()
-
-		pricePerDate := vDetail.Vehicle.GetPrice(vehicle.UnitType("daily"))
+		pricePerDate := vDetail.Vehicle.GetPrice(vehicle.UnitType(booking.DailyUnit))
 		lateFines = totalOverDue * pricePerDate
 	}
 

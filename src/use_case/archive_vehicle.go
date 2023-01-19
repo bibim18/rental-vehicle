@@ -17,6 +17,6 @@ func (u UseCase) ArchiveVehicle(ctx context.Context, vehicleId string) (string, 
 	}
 
 	u.vehicleRepository.UpdateVehicleStatus(ctx, vehicleId, vehicle.UnactiveStatus)
-	successMessage := fmt.Sprintf("Archive success with vehicleId %s", vehicleId)
+	successMessage := fmt.Sprintf("Disabled vehicle success with vehicleId %s", vehicleId)
 	return successMessage, nil
 }

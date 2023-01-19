@@ -39,7 +39,7 @@ func (u UseCase) BookingVehicle(ctx context.Context, b BookingDetail) (string, e
 		VehicleId:  b.Booking.VehicleId,
 		Unit:       b.Booking.Unit,
 		Qty:        int(b.Booking.Qty),
-		Status:     "rent",
+		Status:     booking.RentStatus,
 		RentPrice:  rentalCost,
 		TotalPrice: booking.TotalPriceType(totalPrice),
 		Deposit:    booking.DepositType(rentalDeposit),

@@ -88,10 +88,6 @@ func VerifyStatus(status string) error {
 	return errors.Errorf("vehicle status '%s' is invalid", status)
 }
 
-// func (v Vehicle) GetType() VType {
-// 	return v.VehicleType
-// }
-
 func New(vType VType, v Vehicle) VehicleMethod {
 	vehicleClass := map[VType]VehicleMethod{
 		LuxuryCarType:          NewLuxuryCar(v),
