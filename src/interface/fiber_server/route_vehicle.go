@@ -41,7 +41,10 @@ func (f FiberServer) addRouteVehicle(base fiber.Router) {
 	r := base.Group("/vehicles")
 
 	r.Post("/", f.createVehicle)
+
 	r.Patch("/:vehicleId", f.updateVehicle)
+	r.Patch("/active/:vehicleId", f.updateVehicleStatus)
+
 	r.Get("/:status?", f.listVehicle)
 	r.Delete("/:vehicleId", f.archiveVehicle)
 }
@@ -123,6 +126,17 @@ func (f FiberServer) updateVehicle(c *fiber.Ctx) error {
 
 	usecaseVehicle, err := v.transferRequestToUsecase()
 	msg, err := f.useCase.UpdateVehicleDetail(getSpanContext(c), vId, usecaseVehicle)
+	if err != nil {
+		return f.errorHandler(c, err)
+	}
+
+	return c.SendString(msg)
+}
+
+func (f FiberServer) updateVehicleStatus(c *fiber.Ctx) error {
+	id := c.Params("vehicleId")
+	msg, err := f.useCase.UpdateVehicleStatus(getSpanContext(c), id)
+
 	if err != nil {
 		return f.errorHandler(c, err)
 	}

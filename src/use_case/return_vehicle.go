@@ -32,7 +32,7 @@ func (u UseCase) ReturnVehicle(ctx context.Context, bookingId string) (string, e
 		LateFines:  lateFines,
 	}
 	u.bookingRepository.UpdateReturnedBooking(ctx, bookingId, bookingReturnedDetail)
-	u.vehicleRepository.UpdateVehicleStatus(ctx, bDetail.Booking.VehicleId, vehicle.ReadyStatus)
+	u.vehicleRepository.UpdateVehicleStatus(ctx, bDetail.Booking.VehicleId, vehicle.ActiveStatus)
 
 	successMessage := fmt.Sprintf("Returned success with bookindId %s", bookingId)
 	return successMessage, nil

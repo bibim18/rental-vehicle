@@ -12,7 +12,7 @@ func (u UseCase) ArchiveVehicle(ctx context.Context, vehicleId string) (string, 
 		return "", err
 	}
 
-	if vehicleDetail.Status != vehicle.ReadyStatus {
+	if vehicleDetail.Status != vehicle.ActiveStatus {
 		return "", vehicle.ErrVehicleNotArchive
 	}
 

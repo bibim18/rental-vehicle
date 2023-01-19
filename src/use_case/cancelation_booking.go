@@ -19,7 +19,7 @@ func (u UseCase) CancelationBooking(ctx context.Context, bId string) (string, er
 	}
 
 	u.bookingRepository.UpdateBookingStatus(ctx, bId, booking.CancelStatus)
-	u.vehicleRepository.UpdateVehicleStatus(ctx, bDetail.Booking.VehicleId, vehicle.ReadyStatus)
+	u.vehicleRepository.UpdateVehicleStatus(ctx, bDetail.Booking.VehicleId, vehicle.ActiveStatus)
 
 	successMessage := fmt.Sprintf("Cancelation success with bookindId %s", bId)
 	return successMessage, nil

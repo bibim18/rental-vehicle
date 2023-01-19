@@ -49,7 +49,7 @@ const (
 )
 
 const (
-	ReadyStatus    string = "ready"
+	ActiveStatus   string = "active"
 	InuseStatus    string = "inuse"
 	UnactiveStatus string = "unactive"
 )
@@ -82,7 +82,7 @@ func (v Vehicle) GetPrice(unit UnitType) int {
 
 func VerifyStatus(status string) error {
 	log.Info("vehicle_entity.VerifyStatus", status)
-	if status == ReadyStatus || status == InuseStatus || status == UnactiveStatus {
+	if status == ActiveStatus || status == InuseStatus || status == UnactiveStatus {
 		return nil
 	}
 	return errors.Errorf("vehicle status '%s' is invalid", status)

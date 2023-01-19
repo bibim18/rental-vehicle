@@ -24,7 +24,7 @@ func (u UseCase) BookingVehicle(ctx context.Context, b BookingDetail) (string, e
 		return "", validateBookingErr
 	}
 	vehicleDetail, _ := u.vehicleRepository.GetVehicleById(ctx, b.Booking.VehicleId)
-	if vehicleDetail.Status != vehicle.ReadyStatus {
+	if vehicleDetail.Status != vehicle.ActiveStatus {
 		return "", ErrVehicleNotReadyForRent
 	}
 

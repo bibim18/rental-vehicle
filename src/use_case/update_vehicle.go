@@ -17,11 +17,26 @@ func (u UseCase) UpdateVehicleDetail(ctx context.Context, vId string, v VehicleF
 		return "", err
 	}
 
-	if vehicleDetail.Status != vehicle.ReadyStatus {
+	if vehicleDetail.Status != vehicle.ActiveStatus {
 		return "", vehicle.ErrVehicleNotUpdate
 	}
 
 	u.vehicleRepository.UpdateVehicle(ctx, vId, v)
 	successMessage := fmt.Sprintf("Update success with vehicleId %s", vId)
+	return successMessage, nil
+}
+
+func (u UseCase) UpdateVehicleStatus(ctx context.Context, vehicleId string) (string, error) {
+	vehicleDetail, err := u.vehicleRepository.GetVehicleById(ctx, vehicleId)
+	if err != nil {
+		return "", err
+	}
+
+	if vehicleDetail.Status != vehicle.ActiveStatus {
+		return "", vehicle.ErrVehicleNotArchive
+	}
+
+	u.vehicleRepository.UpdateVehicleStatus(ctx, vehicleId, vehicle.ActiveStatus)
+	successMessage := fmt.Sprintf("Enabled vehicle success with vehicleId %s", vehicleId)
 	return successMessage, nil
 }
