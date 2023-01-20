@@ -9,8 +9,9 @@ import (
 var (
 	ErrInvalidVehicle    = errors.New("Invalid vehicle")
 	ErrVehicleNotFound   = errors.New("Cannot found vehicle")
-	ErrVehicleNotArchive = errors.New("Vehicle cannot archive")
+	ErrVehicleNotArchive = errors.New("Vehicle cannot disbled")
 	ErrVehicleNotUpdate  = errors.New("Vehicle cannot update detail")
+	ErrVehicleNotEnable  = errors.New("Vehicle already enabled")
 )
 
 type Deposit float32

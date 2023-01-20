@@ -32,8 +32,8 @@ func (u UseCase) UpdateVehicleStatus(ctx context.Context, vehicleId string) (str
 		return "", err
 	}
 
-	if vehicleDetail.Status != vehicle.ActiveStatus {
-		return "", vehicle.ErrVehicleNotArchive
+	if vehicleDetail.Status != vehicle.UnactiveStatus {
+		return "", vehicle.ErrVehicleNotEnable
 	}
 
 	u.vehicleRepository.UpdateVehicleStatus(ctx, vehicleId, vehicle.ActiveStatus)
