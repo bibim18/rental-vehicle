@@ -33,6 +33,14 @@ type mongoBooking struct {
 	ReturnDate time.Time              `bson:"return_date"`
 }
 
+type mongoBookingReturned struct {
+	Status      booking.BookingStatus `bson:"status"`
+	Deposit     booking.DepositType   `bson:"deposit"`
+	LateFines   int                   `bson:"late_fines"`
+	ReturnDate  time.Time             `bson:"return_date"`
+	SummaryFine int                   `bson:"summary_fine"`
+}
+
 type mongoBookingCustomer struct {
 	Name        string `bson:"name"`
 	Lastname    string `bson:"last_name"`
@@ -64,16 +72,19 @@ func transferMongoToBookingStruct(b mongoBooking) use_case.BookingFullDetail {
 			Status:    b.Status,
 			DueDate:   b.DueDate,
 			RentDate:  b.RentDate,
+			Deposit:   b.Deposit,
 		},
 		Customer: customer.Customer(b.Customer),
 	}
 }
 
-func transferUpdatedBookingToMongoStruct(b booking.Booking) mongoBooking {
-	return mongoBooking{
-		Status:     b.Status,
-		LateFines:  b.LateFines,
-		ReturnDate: b.ReturnDate,
+func transferUpdatedBookingToMongoStruct(b booking.Booking) mongoBookingReturned {
+	return mongoBookingReturned{
+		Status:      b.Status,
+		LateFines:   b.LateFines,
+		ReturnDate:  b.ReturnDate,
+		Deposit:     b.Deposit,
+		SummaryFine: b.SummaryFine,
 	}
 }
 

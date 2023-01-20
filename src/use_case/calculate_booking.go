@@ -30,7 +30,7 @@ func (u UseCase) CalculatePrice(deposit vehicle.Deposit, price int) (vehicle.Dep
 }
 
 func (u UseCase) CalculateLateFines(bDetail BookingFullDetail, vDetail VehicleFullDetail) (time.Time, int) {
-	// คำนวนค่าปรับ
+	// คำนวนค่าปรับถ้าวันคืนเกิดกำหนด
 	log.Info("calculate_booking.CalculateLateFines")
 
 	var lateFines int = 0
@@ -43,4 +43,15 @@ func (u UseCase) CalculateLateFines(bDetail BookingFullDetail, vDetail VehicleFu
 	}
 
 	return returnDate, lateFines
+}
+
+func (u UseCase) CalculateSummaryLateFines(deposit booking.DepositType, lateFines int) int {
+	// หักค่าปรับกับมัดจำ
+	log.Info("calculate_booking.CalculateSummaryLateFines")
+	var totalLateFines int = 0
+	if lateFines > 0 {
+		totalLateFines = int(deposit) - lateFines
+	}
+
+	return totalLateFines
 }

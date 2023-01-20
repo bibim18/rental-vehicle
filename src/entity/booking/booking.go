@@ -13,17 +13,18 @@ var (
 )
 
 type Booking struct {
-	VehicleId  string   `validate:"required"`
-	Unit       UnitType `validate:"oneof='daily' 'monthly' 'yearly'"`
-	Qty        int      `validate:"gt=0"`
-	Status     BookingStatus
-	DueDate    time.Time
-	RentDate   time.Time
-	ReturnDate time.Time
-	TotalPrice TotalPriceType
-	RentPrice  int
-	LateFines  int
-	Deposit    DepositType
+	VehicleId   string   `validate:"required"`
+	Unit        UnitType `validate:"oneof='daily' 'monthly' 'yearly'"`
+	Qty         int      `validate:"gt=0"`
+	Status      BookingStatus
+	DueDate     time.Time
+	RentDate    time.Time
+	ReturnDate  time.Time
+	TotalPrice  TotalPriceType
+	RentPrice   int
+	LateFines   int
+	Deposit     DepositType
+	SummaryFine int
 }
 type UnitType string
 type DepositType float32

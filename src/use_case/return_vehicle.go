@@ -26,11 +26,17 @@ func (u UseCase) ReturnVehicle(ctx context.Context, bookingId string) (string, e
 	}
 
 	returnDate, lateFines := u.CalculateLateFines(bDetail, vehicleDetail)
+	summaryFine := u.CalculateSummaryLateFines(bDetail.Booking.Deposit, lateFines)
+
 	bookingReturnedDetail := booking.Booking{
-		Status:     booking.ReturnStatus,
-		ReturnDate: returnDate,
-		LateFines:  lateFines,
+		Status:      booking.ReturnStatus,
+		ReturnDate:  returnDate,
+		LateFines:   lateFines,
+		Deposit:     bDetail.Booking.Deposit,
+		SummaryFine: summaryFine,
 	}
+
+	fmt.Println("bookingReturnedDetail >>", bookingReturnedDetail)
 	u.bookingRepository.UpdateReturnedBooking(ctx, bookingId, bookingReturnedDetail)
 	u.vehicleRepository.UpdateVehicleStatus(ctx, bDetail.Booking.VehicleId, vehicle.ActiveStatus)
 
