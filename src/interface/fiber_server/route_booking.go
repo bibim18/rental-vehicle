@@ -26,7 +26,7 @@ func (f FiberServer) addRouteBooking(base fiber.Router) {
 	r := base.Group("/bookings")
 
 	r.Post("/", f.bookingVehicle)
-	r.Patch("/return-vehicle/:bookingId", f.returnVehicle)
+	r.Patch("/return-price_model/:bookingId", f.returnVehicle)
 	r.Patch("/cancel/:bookingId", f.cancelBooking)
 
 }

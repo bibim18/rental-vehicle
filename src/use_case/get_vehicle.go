@@ -2,7 +2,7 @@ package use_case
 
 import (
 	"context"
-	"rental-vehicle-system/src/entity/vehicle"
+	"rental-vehicle-system/src/entity/price_model"
 )
 
 func (u UseCase) GetVehicle(ctx context.Context, status string) ([]VehicleFullDetail, error) {
@@ -10,7 +10,7 @@ func (u UseCase) GetVehicle(ctx context.Context, status string) ([]VehicleFullDe
 	var err error
 
 	if status != "" {
-		err = vehicle.VerifyStatus(status)
+		err = price_model.VerifyStatus(status)
 		if err != nil {
 			return []VehicleFullDetail{}, err
 		}

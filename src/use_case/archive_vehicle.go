@@ -3,7 +3,7 @@ package use_case
 import (
 	"context"
 	"fmt"
-	"rental-vehicle-system/src/entity/vehicle"
+	"rental-vehicle-system/src/entity/price_model"
 )
 
 func (u UseCase) ArchiveVehicle(ctx context.Context, vehicleId string) (string, error) {
@@ -12,11 +12,11 @@ func (u UseCase) ArchiveVehicle(ctx context.Context, vehicleId string) (string, 
 		return "", err
 	}
 
-	if vehicleDetail.Status != vehicle.ActiveStatus {
-		return "", vehicle.ErrVehicleNotArchive
+	if vehicleDetail.Status != price_model.ActiveStatus {
+		return "", price_model.ErrVehicleNotArchive
 	}
 
-	u.vehicleRepository.UpdateVehicleStatus(ctx, vehicleId, vehicle.UnactiveStatus)
-	successMessage := fmt.Sprintf("Disabled vehicle success with vehicleId %s", vehicleId)
+	u.vehicleRepository.UpdateVehicleStatus(ctx, vehicleId, price_model.InactiveStatus)
+	successMessage := fmt.Sprintf("Disabled price_model success with vehicleId %s", vehicleId)
 	return successMessage, nil
 }

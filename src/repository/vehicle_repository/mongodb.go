@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"rental-vehicle-system/src/entity/vehicle"
+	"rental-vehicle-system/src/entity/price_model"
 	"rental-vehicle-system/src/use_case"
 
 	"github.com/pkg/errors"
@@ -23,7 +23,7 @@ type mongoVehicleFullStruct struct {
 	Brand          string                `bson:"brand"`
 	Model          string                `bson:"model"`
 	LicensePlate   string                `bson:"license_plate"`
-	VehicleType    vehicle.VType         `bson:"vehicle_type"`
+	VehicleType    price_model.VType     `bson:"price_model"`
 	Color          string                `bson:"color"`
 	Status         string                `bson:"status"`
 	RatePrice      mongoVehicleRatePrice `bson:"rate_price"`
@@ -34,16 +34,16 @@ type mongoVehicle struct {
 	Brand        string                `bson:"brand"`
 	Model        string                `bson:"model"`
 	LicensePlate string                `bson:"license_plate"`
-	VehicleType  vehicle.VType         `bson:"vehicle_type"`
+	VehicleType  price_model.VType     `bson:"price_model"`
 	Color        string                `bson:"color"`
 	RatePrice    mongoVehicleRatePrice `bson:"rate_price"`
 }
 
 type mongoVehicleRatePrice struct {
-	Daily   int             `bson:"daily"`
-	Monthly int             `bson:"monthly"`
-	Yearly  int             `bson:"yearly"`
-	Deposit vehicle.Deposit `bson:"deposit"`
+	Daily   int                 `bson:"daily"`
+	Monthly int                 `bson:"monthly"`
+	Yearly  int                 `bson:"yearly"`
+	Deposit price_model.Deposit `bson:"deposit"`
 }
 
 func transferVehicleToMongoFullStruct(v use_case.VehicleFullDetail) mongoVehicleFullStruct {
@@ -72,13 +72,13 @@ func transferVehicleToMongoStruct(v use_case.VehicleFullDetail) mongoVehicle {
 
 func transferMongoToVehicleStruct(mVehicle mongoVehicleFullStruct) use_case.VehicleFullDetail {
 	return use_case.VehicleFullDetail{
-		Vehicle: vehicle.Vehicle{
+		Vehicle: price_model.vehicle{
 			Brand:        mVehicle.Brand,
 			Model:        mVehicle.Model,
 			LicensePlate: mVehicle.LicensePlate,
 			VehicleType:  mVehicle.VehicleType,
 			Color:        mVehicle.Color,
-			RatePrice:    vehicle.Price(mVehicle.RatePrice),
+			RatePrice:    price_model.Pricing(mVehicle.RatePrice),
 		},
 		Status: mVehicle.Status,
 	}
@@ -108,7 +108,7 @@ func (m mongoDb) UpdateVehicleStatus(ctx context.Context, vehicleId string, stat
 	}
 
 	if res.ModifiedCount == 0 {
-		return errors.Errorf("update vehicle status at _id : %s not found: %w", vehicleId, vehicle.ErrVehicleNotFound)
+		return errors.Errorf("update price_model status at _id : %s not found: %w", vehicleId, price_model.ErrVehicleNotFound)
 	}
 
 	return err
@@ -130,7 +130,7 @@ func (m mongoDb) UpdateVehicle(ctx context.Context, vehicleId string, v use_case
 	}
 
 	if res.ModifiedCount == 0 {
-		return errors.Errorf("update vehicle at _id : %s not found: %w", vehicleId, vehicle.ErrVehicleNotFound)
+		return errors.Errorf("update price_model at _id : %s not found: %w", vehicleId, price_model.ErrVehicleNotFound)
 	}
 
 	return err

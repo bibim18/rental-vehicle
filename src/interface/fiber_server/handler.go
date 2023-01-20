@@ -3,7 +3,7 @@ package fiber_server
 import (
 	"context"
 
-	"rental-vehicle-system/src/entity/vehicle"
+	"rental-vehicle-system/src/entity/price_model"
 
 	"github.com/cockroachdb/errors"
 	"github.com/gofiber/fiber/v2"
@@ -25,7 +25,7 @@ type ErrorMapInfo struct {
 }
 
 var errorList = map[error]ErrorMapInfo{
-	vehicle.ErrInvalidVehicle: {400, 1},
+	price_model.ErrInvalidVehicle: {400, 1},
 }
 
 func (f FiberServer) sendError(c *fiber.Ctx, status int, err error, errCode int, issueId string) error {

@@ -3,22 +3,14 @@ package use_case
 import (
 	"context"
 	"errors"
-	"time"
-
 	"rental-vehicle-system/src/entity/booking"
 	"rental-vehicle-system/src/entity/customer"
-	"rental-vehicle-system/src/entity/vehicle"
+	"rental-vehicle-system/src/entity/price_model"
 )
 
 type UseCase struct {
 	vehicleRepository VehicleRepository
 	bookingRepository BookingRepository
-}
-
-type VehicleFullDetail struct {
-	Vehicle        vehicle.Vehicle
-	Status         string
-	RegisteredDate time.Time
 }
 
 type BookingFullDetail struct {
@@ -27,11 +19,14 @@ type BookingFullDetail struct {
 }
 
 type VehicleRepository interface {
-	GetVehicleById(ctx context.Context, vehicleId string) (VehicleFullDetail, error)
-	GetVehicleByStatus(ctx context.Context, status string, limit, offset int64) ([]VehicleFullDetail, error)
-	CreateVehicle(ctx context.Context, vehicle VehicleFullDetail) error
+	GetVehicleById(ctx context.Context, vehicleId string) (price_model.PriceModel, error)
+	GetVehicleByStatus(ctx context.Context, status string, limit, offset int64) ([]price_model.PriceModel, error)
+
+	CreateVehicle(ctx context.Context, vehicle price_model.PriceModel) error
+	CreateVehicles(ctx context.Context, vehicles []price_model.PriceModel) error
+
 	UpdateVehicleStatus(ctx context.Context, vehicleId string, status string) error
-	UpdateVehicle(ctx context.Context, vehicleId string, vehicle VehicleFullDetail) error
+	UpdateVehicle(ctx context.Context, vehicleId string, vehicle price_model.PriceModel) error
 }
 
 type BookingRepository interface {
@@ -42,7 +37,7 @@ type BookingRepository interface {
 }
 
 var (
-	ErrVehicleNotReadyForRent   = errors.New("vehicle not ready for rent")
+	ErrVehicleNotReadyForRent   = errors.New("price_model not ready for rent")
 	ErrBookingStatusIsNotRent   = errors.New("Booking cannot return")
 	ErrBookingStatusIsNotCancel = errors.New("Booking cannot cancel")
 )

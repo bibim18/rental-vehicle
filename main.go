@@ -23,7 +23,7 @@ type config struct {
 	Port        uint   `env:"PORT" envDefault:"8080"`
 	MongoDbUri  string `env:"MONGO_DB_URI" envDefault:"mongodb://root:password@localhost:27017"`
 	MongoDBName struct {
-		RentalDB string `env:"MONGO_DB_NAME" envDefault:"rental-vehicle"`
+		RentalDB string `env:"MONGO_DB_NAME" envDefault:"rental-price_model"`
 	}
 }
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"rental-vehicle-system/src/entity/booking"
-	"rental-vehicle-system/src/entity/vehicle"
+	"rental-vehicle-system/src/entity/price_model"
 )
 
 func (u UseCase) CancelationBooking(ctx context.Context, bId string) (string, error) {
@@ -19,7 +19,7 @@ func (u UseCase) CancelationBooking(ctx context.Context, bId string) (string, er
 	}
 
 	u.bookingRepository.UpdateBookingStatus(ctx, bId, booking.CancelStatus)
-	u.vehicleRepository.UpdateVehicleStatus(ctx, bDetail.Booking.VehicleId, vehicle.ActiveStatus)
+	u.vehicleRepository.UpdateVehicleStatus(ctx, bDetail.Booking.VehicleId, price_model.ActiveStatus)
 
 	successMessage := fmt.Sprintf("Cancelation success with bookindId %s", bId)
 	return successMessage, nil

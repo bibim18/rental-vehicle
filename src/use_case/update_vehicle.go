@@ -3,7 +3,7 @@ package use_case
 import (
 	"context"
 	"fmt"
-	"rental-vehicle-system/src/entity/vehicle"
+	"rental-vehicle-system/src/entity/price_model"
 )
 
 func (u UseCase) UpdateVehicleDetail(ctx context.Context, vId string, v VehicleFullDetail) (string, error) {
@@ -17,8 +17,8 @@ func (u UseCase) UpdateVehicleDetail(ctx context.Context, vId string, v VehicleF
 		return "", err
 	}
 
-	if vehicleDetail.Status != vehicle.ActiveStatus {
-		return "", vehicle.ErrVehicleNotUpdate
+	if vehicleDetail.Status != price_model.ActiveStatus {
+		return "", price_model.ErrVehicleNotUpdate
 	}
 
 	u.vehicleRepository.UpdateVehicle(ctx, vId, v)
@@ -32,11 +32,11 @@ func (u UseCase) UpdateVehicleStatus(ctx context.Context, vehicleId string) (str
 		return "", err
 	}
 
-	if vehicleDetail.Status != vehicle.UnactiveStatus {
-		return "", vehicle.ErrVehicleNotEnable
+	if vehicleDetail.Status != price_model.InactiveStatus {
+		return "", price_model.ErrVehicleNotEnable
 	}
 
-	u.vehicleRepository.UpdateVehicleStatus(ctx, vehicleId, vehicle.ActiveStatus)
-	successMessage := fmt.Sprintf("Enabled vehicle success with vehicleId %s", vehicleId)
+	u.vehicleRepository.UpdateVehicleStatus(ctx, vehicleId, price_model.ActiveStatus)
+	successMessage := fmt.Sprintf("Enabled price_model success with vehicleId %s", vehicleId)
 	return successMessage, nil
 }

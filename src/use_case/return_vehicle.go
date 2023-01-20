@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"rental-vehicle-system/src/entity/booking"
-	"rental-vehicle-system/src/entity/vehicle"
+	"rental-vehicle-system/src/entity/price_model"
 
 	"github.com/cockroachdb/errors"
 )
@@ -38,7 +38,7 @@ func (u UseCase) ReturnVehicle(ctx context.Context, bookingId string) (string, e
 
 	fmt.Println("bookingReturnedDetail >>", bookingReturnedDetail)
 	u.bookingRepository.UpdateReturnedBooking(ctx, bookingId, bookingReturnedDetail)
-	u.vehicleRepository.UpdateVehicleStatus(ctx, bDetail.Booking.VehicleId, vehicle.ActiveStatus)
+	u.vehicleRepository.UpdateVehicleStatus(ctx, bDetail.Booking.VehicleId, price_model.ActiveStatus)
 
 	successMessage := fmt.Sprintf("Returned success with bookindId %s", bookingId)
 	return successMessage, nil

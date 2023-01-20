@@ -32,6 +32,7 @@ type TotalPriceType float32
 type BookingStatus string
 
 const (
+	Pending      BookingStatus = "pending"
 	RentStatus   BookingStatus = "rent"
 	CancelStatus BookingStatus = "cancel"
 	ReturnStatus BookingStatus = "return"

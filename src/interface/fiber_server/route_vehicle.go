@@ -1,41 +1,10 @@
 package fiber_server
 
 import (
-	"rental-vehicle-system/src/entity/vehicle"
-	"rental-vehicle-system/src/use_case"
-
 	"github.com/gofiber/fiber/v2"
+	"rental-vehicle-system/src/entity/price_model"
+	"rental-vehicle-system/src/use_case"
 )
-
-type createVehicleRequest struct {
-	Vehicles  []vehicleDataRequest `json:"vehicles"`
-	RatePrice ratePriceDataRequest `json:"rate_price"`
-}
-
-type updateVehicleRequest struct {
-	Vehicle   vehicleDataRequest   `json:"vehicle"`
-	RatePrice ratePriceDataRequest `json:"rate_price"`
-}
-
-type vehicleDataRequest struct {
-	Brand        string        `json:"brand"`
-	Model        string        `json:"model"`
-	LicensePlate string        `json:"license_plate"`
-	VehicleType  vehicle.VType `json:"vehicle_type"`
-	Color        string        `json:"color"`
-}
-
-type ratePriceDataRequest struct {
-	Daily   int             `json:"daily"`
-	Monthly int             `json:"monthly"`
-	Yearly  int             `json:"yearly"`
-	Deposit vehicle.Deposit `json:"deposit"`
-}
-
-type ResponseData struct {
-	Total int
-	Data  []use_case.VehicleFullDetail
-}
 
 func (f FiberServer) addRouteVehicle(base fiber.Router) {
 	r := base.Group("/vehicles")
@@ -50,9 +19,9 @@ func (f FiberServer) addRouteVehicle(base fiber.Router) {
 }
 
 func (cv createVehicleRequest) transferRequestToUsecase() (use_case.VehicleWithPrice, error) {
-	vehicles := make([]vehicle.Vehicle, len(cv.Vehicles))
+	vehicles := make([]price_model.vehicle, len(cv.Vehicles))
 	for i, v := range cv.Vehicles {
-		vehicles[i] = vehicle.Vehicle{
+		vehicles[i] = price_model.vehicle{
 			Brand:        v.Brand,
 			Model:        v.Model,
 			Color:        v.Color,
@@ -63,7 +32,7 @@ func (cv createVehicleRequest) transferRequestToUsecase() (use_case.VehicleWithP
 
 	return use_case.VehicleWithPrice{
 		Vehicles: vehicles,
-		RatePrice: vehicle.Price{
+		RatePrice: price_model.Pricing{
 			Daily:   cv.RatePrice.Daily,
 			Monthly: cv.RatePrice.Monthly,
 			Yearly:  cv.RatePrice.Yearly,
@@ -74,13 +43,13 @@ func (cv createVehicleRequest) transferRequestToUsecase() (use_case.VehicleWithP
 
 func (uv updateVehicleRequest) transferRequestToUsecase() (use_case.VehicleFullDetail, error) {
 	return use_case.VehicleFullDetail{
-		Vehicle: vehicle.Vehicle{
+		Vehicle: price_model.vehicle{
 			Brand:        uv.Vehicle.Brand,
 			Model:        uv.Vehicle.Model,
 			LicensePlate: uv.Vehicle.LicensePlate,
 			VehicleType:  uv.Vehicle.VehicleType,
 			Color:        uv.Vehicle.Color,
-			RatePrice:    vehicle.Price(uv.RatePrice),
+			RatePrice:    price_model.Pricing(uv.RatePrice),
 		},
 	}, nil
 }
