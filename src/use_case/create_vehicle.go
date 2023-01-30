@@ -30,7 +30,7 @@ func (u UseCase) CreateVehicle(ctx context.Context, v VehicleWithPrice) (string,
 				Color:        vItem.Color,
 				RatePrice:    vItem.RatePrice,
 			},
-			Status:         "ready",
+			Status:         vehicle.ActiveStatus,
 			RegisteredDate: time.Now(),
 		}
 		u.vehicleRepository.CreateVehicle(ctx, vFull)

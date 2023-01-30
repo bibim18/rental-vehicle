@@ -36,7 +36,6 @@ func (u UseCase) ReturnVehicle(ctx context.Context, bookingId string) (string, e
 		SummaryFine: summaryFine,
 	}
 
-	fmt.Println("bookingReturnedDetail >>", bookingReturnedDetail)
 	u.bookingRepository.UpdateReturnedBooking(ctx, bookingId, bookingReturnedDetail)
 	u.vehicleRepository.UpdateVehicleStatus(ctx, bDetail.Booking.VehicleId, vehicle.ActiveStatus)
 
